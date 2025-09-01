@@ -312,76 +312,108 @@ export const BatchesView: React.FC<BatchesViewProps> = ({ enrollments, setCurren
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4"
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-6 w-full max-w-md"
+              className="bg-white rounded-2xl w-full max-w-md mx-4 overflow-hidden relative"
+              style={{ maxHeight: '90vh', overflowY: 'auto' }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Pause Session</h3>
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => setShowPauseModal(false)}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    ← Back
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="px-6 py-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Pause Session</h2>
+                <p className="text-gray-600 mb-6">
+                  Please select the date you would like to pause
+                </p>
+
+                {/* Date Selection */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Select date</label>
+                  <div className="relative">
+                    <select
+                      value={selectedSessionForPause?._id || ''}
+                      onChange={(e) => {
+                        const session = sessionSchedules.find(s => s._id === e.target.value);
+                        setSelectedSessionForPause(session || null);
+                      }}
+                      className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                    >
+                      <option value="">Choose a date</option>
+                      {sessionSchedules
+                        .filter(s => s.status === 'scheduled' && new Date(s.scheduledDate) > new Date())
+                        .slice(0, 5)
+                        .map((session) => {
+                          const enrollment = activeEnrollments.find(e => e._id === session.enrollmentId);
+                          return (
+                            <option key={session._id} value={session._id}>
+                              {new Date(session.scheduledDate).toLocaleDateString('en-US', { 
+                                weekday: 'short', 
+                                month: 'short', 
+                                day: 'numeric' 
+                              })} at {formatTo12Hour(session.scheduledStartTime)} - {enrollment?.sport?.name || 'Training'}
+                            </option>
+                          );
+                        })}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reason Input */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Reason for pausing *</label>
+                  <textarea
+                    value={pauseReason}
+                    onChange={(e) => setPauseReason(e.target.value)}
+                    placeholder="Please provide a reason for pausing this session."
+                    className="w-full p-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows={3}
+                  />
+                </div>
+
+                {/* Important Notes */}
+                <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold text-gray-900 mb-2">Important Notes</h3>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    <li>• Sessions can only be paused at least 2 hours before start time</li>
+                    <li>• Session will be rescheduled to next available slot</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-4 bg-gray-50 flex gap-3">
                 <button
                   onClick={() => setShowPauseModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
-                >
-                  <X className="w-5 h-5 text-gray-500" />
-                </button>
-              </div>
-              
-              <p className="text-gray-600 mb-4">
-                Select a session to pause. It will be rescheduled to the next available slot.
-              </p>
-              
-              <div className="space-y-3 mb-6">
-                {sessionSchedules
-                  .filter(s => s.status === 'scheduled' && new Date(s.scheduledDate) > new Date())
-                  .slice(0, 3)
-                  .map((session) => {
-                    const enrollment = activeEnrollments.find(e => e._id === session.enrollmentId);
-                    return (
-                      <button
-                        key={session._id}
-                        onClick={() => setSelectedSessionForPause(session)}
-                        className={`w-full p-3 rounded-lg border text-left transition-colors ${
-                          selectedSessionForPause?._id === session._id
-                            ? 'border-pink-500 bg-pink-50'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <div className="font-medium text-gray-900">
-                          {enrollment?.sport?.name || 'Training'}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          {new Date(session.scheduledDate).toLocaleDateString()} at {formatTo12Hour(session.scheduledStartTime)}
-                        </div>
-                      </button>
-                    );
-                  })}
-              </div>
-              
-              <textarea
-                value={pauseReason}
-                onChange={(e) => setPauseReason(e.target.value)}
-                placeholder="Reason for pausing (optional)"
-                className="w-full p-3 border border-gray-200 rounded-lg mb-4 resize-none"
-                rows={3}
-              />
-              
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowPauseModal(false)}
-                  className="flex-1 py-3 border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+                  className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlePauseSession}
-                  disabled={!selectedSessionForPause}
-                  className="flex-1 py-3 bg-pink-500 text-white rounded-lg font-medium hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!selectedSessionForPause || !pauseReason.trim()}
+                  className="flex-1 py-3 px-4 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Pause Session
+                  Pause
                 </button>
               </div>
             </motion.div>
