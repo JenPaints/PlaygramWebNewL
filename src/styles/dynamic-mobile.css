@@ -1,0 +1,425 @@
+/* Dynamic Mobile Navigation Styles */
+/* Highly versatile and adaptive to any mobile layout */
+
+:root {
+  /* Dynamic CSS variables updated by JavaScript */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --viewport-height: 100vh;
+  --device-type: 'web';
+  --orientation: 'portrait';
+  
+  /* Calculated values */
+  --header-total-height: calc(var(--safe-area-top) + 68px);
+  --footer-total-height: calc(var(--safe-area-bottom) + 80px);
+  --content-available-height: calc(var(--viewport-height) - var(--header-total-height) - var(--footer-total-height));
+}
+
+/* Dynamic viewport units for better mobile support */
+@supports (height: 100dvh) {
+  :root {
+    --viewport-height: 100dvh;
+  }
+}
+
+/* Base mobile container with full safe area support */
+.dynamic-mobile-container {
+  position: relative;
+  min-height: var(--viewport-height);
+  background: #f9fafb;
+  
+  /* Prevent overscroll and zoom */
+  overscroll-behavior: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Safe area padding for content */
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+}
+
+/* Dynamic header that adapts to any device */
+.dynamic-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  
+  /* Solid white background */
+  background: #ffffff;
+  
+  /* Subtle border */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  
+  /* Dynamic safe area handling */
+  padding-top: var(--safe-area-top);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  
+  /* Smooth transitions for orientation changes */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header content with minimum touch targets */
+.dynamic-header-content {
+  padding: 12px 16px;
+  min-height: 44px; /* iOS minimum touch target */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Dynamic footer that adapts to any device */
+.dynamic-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  
+  /* Clean background */
+  background: #ffffff;
+  
+  /* Elevated shadow */
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.15);
+  
+  /* Dynamic safe area handling */
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Content area that respects dynamic header and footer */
+.dynamic-content {
+  padding-top: var(--header-total-height);
+  padding-bottom: var(--footer-total-height);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  
+  min-height: var(--content-available-height);
+  
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+/* Touch-optimized buttons with haptic feedback */
+.dynamic-touch-button {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  
+  /* Touch feedback */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dynamic-touch-button:active {
+  transform: scale(0.95);
+}
+
+/* Navigation grid that adapts to orientation */
+.dynamic-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+/* Navigation items with adaptive sizing */
+.dynamic-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  min-height: 44px;
+  
+  /* Touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Smooth transitions */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dynamic-nav-item:active {
+  transform: scale(0.95);
+}
+
+/* Icon containers with adaptive sizing */
+.dynamic-nav-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Text labels with adaptive sizing */
+.dynamic-nav-text {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Landscape mode adaptations */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --header-total-height: calc(var(--safe-area-top) + 56px);
+    --footer-total-height: calc(var(--safe-area-bottom) + 60px);
+  }
+  
+  .dynamic-header-content {
+    padding: 8px 16px;
+    min-height: 40px;
+  }
+  
+  .dynamic-nav-item {
+    padding: 8px 4px;
+    min-height: 40px;
+  }
+  
+  .dynamic-nav-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 2px;
+  }
+  
+  .dynamic-nav-text {
+    font-size: 10px;
+  }
+  
+  /* Hide text labels in landscape for more space */
+  .dynamic-nav-text-landscape-hidden {
+    display: none;
+  }
+}
+
+/* Device-specific optimizations */
+
+/* iOS specific */
+@supports (-webkit-appearance: none) {
+  .dynamic-header {
+    /* iOS blur effect enhancement */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+  
+  .dynamic-footer {
+    /* iOS home indicator spacing */
+    padding-bottom: max(var(--safe-area-bottom), 34px);
+  }
+}
+
+/* Android specific */
+@media screen and (max-width: 768px) {
+  .android-navigation-bar {
+    /* Android navigation bar handling */
+    padding-bottom: max(var(--safe-area-bottom), 48px);
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .dynamic-header {
+    /* Sharper borders on high DPI */
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-header,
+  .dynamic-footer,
+  .dynamic-nav-item,
+  .dynamic-nav-icon,
+  .dynamic-nav-text,
+  .dynamic-touch-button {
+    transition: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .dynamic-header {
+    background: rgba(17, 24, 39, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .dynamic-footer {
+    background: #111827;
+  }
+  
+  .dynamic-mobile-container {
+    background: #111827;
+  }
+}
+
+/* Accessibility enhancements */
+@media (prefers-contrast: high) {
+  .dynamic-header {
+    background: rgba(255, 255, 255, 1);
+    border-bottom: 2px solid #000000;
+  }
+  
+  .dynamic-footer {
+    background: #ffffff;
+    border-top: 2px solid #000000;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.dynamic-touch-button:focus-visible,
+.dynamic-nav-item:focus-visible {
+  outline: 2px solid #007AFF;
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.dynamic-loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Error states */
+.dynamic-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+}
+
+/* Success states */
+.dynamic-success {
+  background: #efe;
+  border: 1px solid #cfc;
+  color: #3c3;
+}
+
+/* Modal overlays with proper safe area handling */
+.dynamic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  
+  /* Safe area handling */
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Swipe gesture indicators */
+.dynamic-swipe-indicator {
+  position: relative;
+}
+
+.dynamic-swipe-indicator::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+/* Pull-to-refresh styling */
+.dynamic-pull-refresh {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Keyboard avoidance */
+.dynamic-keyboard-avoid {
+  padding-bottom: env(keyboard-inset-height, 0px);
+}
+
+/* Utility classes for dynamic spacing */
+.dynamic-spacing-xs { padding: 4px; }
+.dynamic-spacing-sm { padding: 8px; }
+.dynamic-spacing-md { padding: 16px; }
+.dynamic-spacing-lg { padding: 24px; }
+.dynamic-spacing-xl { padding: 32px; }
+
+/* Responsive text sizing */
+.dynamic-text-xs { font-size: 10px; }
+.dynamic-text-sm { font-size: 12px; }
+.dynamic-text-md { font-size: 14px; }
+.dynamic-text-lg { font-size: 16px; }
+.dynamic-text-xl { font-size: 18px; }
+
+/* Dynamic margins that respect safe areas */
+.dynamic-margin-safe {
+  margin-left: var(--safe-area-left);
+  margin-right: var(--safe-area-right);
+}
+
+/* Flexible grid system */
+.dynamic-grid-1 { grid-template-columns: 1fr; }
+.dynamic-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.dynamic-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.dynamic-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.dynamic-grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+/* Adaptive card styling */
+.dynamic-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 8px;
+  padding: 16px;
+  
+  /* Safe area aware margins */
+  margin-left: max(8px, var(--safe-area-left));
+  margin-right: max(8px, var(--safe-area-right));
+}
+
+/* Performance optimizations */
+.dynamic-will-change {
+  will-change: transform, opacity;
+}
+
+.dynamic-gpu-accelerated {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Print styles (hide navigation) */
+@media print {
+  .dynamic-header,
+  .dynamic-footer {
+    display: none !important;
+  }
+  
+  .dynamic-content {
+    padding: 0 !important;
+  }
+}

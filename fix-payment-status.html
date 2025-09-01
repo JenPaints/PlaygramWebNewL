@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Status Fix Tool - Complete Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        .critical {
+            border-left: 5px solid #dc3545;
+            background-color: #f8d7da;
+        }
+        .success {
+            border-left: 5px solid #28a745;
+            background-color: #d4edda;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success-text {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+        .success-btn {
+            background-color: #28a745;
+        }
+        .success-btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            margin: 10px 5px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-fixed { background-color: #28a745; }
+        .status-pending { background-color: #ffc107; }
+        .status-error { background-color: #dc3545; }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Payment Status Fix Tool - Complete Solution</h1>
+        
+        <div class="section success">
+            <h2>✅ Issue Resolution Status</h2>
+            <p><strong>Root Cause Identified:</strong> Missing Razorpay webhook handler causing payment status synchronization issues.</p>
+            <p><strong>Solution Implemented:</strong> Added comprehensive webhook processing and payment synchronization system.</p>
+            <div class="warning">
+                <strong>🎯 New Features Added:</strong>
+                <ul>
+                    <li>✅ Automatic webhook processing for real-time payment updates</li>
+                    <li>✅ Comprehensive payment status synchronization across all tables</li>
+                    <li>✅ Enhanced debugging and monitoring capabilities</li>
+                    <li>✅ Proactive payment status correction system</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Quick Fix - Run This First</h2>
+            <p>This will fix all existing payment status mismatches in the system:</p>
+            <button onclick="runComprehensiveSync()" class="success-btn">🔄 Fix All Payment Status Issues</button>
+            <div id="comprehensiveSyncResult"></div>
+        </div>
+
+        <div class="grid">
+            <div class="section">
+                <h2>Step 1: Debug Specific User</h2>
+                <p>Check payment status for a specific user by phone number:</p>
+                <input type="text" id="phoneNumber" placeholder="Enter phone number (e.g., +919876543210)" />
+                <br>
+                <button onclick="debugUserPayment()">🔍 Debug User Payment</button>
+                <div id="debugResult"></div>
+            </div>
+
+            <div class="section">
+                <h2>Step 2: Fix User Payment Status</h2>
+                <p>Fix payment status for the user checked above:</p>
+                <button onclick="fixUserPaymentStatus()" class="danger">🔧 Fix User Payment Status</button>
+                <div id="fixUserResult"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: System-Wide Operations</h2>
+            <div class="grid">
+                <div>
+                    <h3>Sync Missing Payments</h3>
+                    <p>Create missing payment records for enrollments:</p>
+                    <button onclick="syncMissingPayments()">🔄 Sync Missing Payments</button>
+                    <div id="syncResult"></div>
+                </div>
+                <div>
+                    <h3>Legacy Fix (Old Method)</h3>
+                    <p>Fix all pending payments using legacy method:</p>
+                    <button onclick="fixAllPendingPayments()" class="danger">🔧 Fix All Pending (Legacy)</button>
+                    <div id="bulkFixResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step 4: System Health Check</h2>
+            <button onclick="getPaymentStats()">📊 Get Payment Statistics</button>
+            <div id="statsResult"></div>
+        </div>
+
+        <div class="section critical">
+            <h2>🔧 Technical Implementation Details</h2>
+            <p><strong>Webhook Endpoint:</strong> <code>/api/razorpay-webhook</code></p>
+            <p><strong>Automatic Processing:</strong> Payment status updates happen automatically when Razorpay sends webhooks</p>
+            <p><strong>Multi-Table Sync:</strong> Updates synchronized across payments, userEnrollments, and enrollments tables</p>
+            <p><strong>Comprehensive Logging:</strong> All payment operations are logged for debugging</p>
+            
+            <div class="warning">
+                <strong>⚠️ For Developers:</strong> Configure Razorpay webhook URL in your Razorpay dashboard to point to: <br>
+                <code>https://your-domain.convex.cloud/api/razorpay-webhook</code>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ConvexHttpClient } from "https://cdn.skypack.dev/convex/browser";
+        
+        const client = new ConvexHttpClient("https://playgram-app.convex.cloud");
+        let currentPhoneNumber = '';
+        
+        window.runComprehensiveSync = async function() {
+            const resultDiv = document.getElementById('comprehensiveSyncResult');
+            resultDiv.innerHTML = '<div class="info">🔄 Running comprehensive payment synchronization... This may take a few minutes.</div>';
+            
+            try {
+                const result = await client.mutation("debugPayment:syncAllPaymentStatuses", {});
+                
+                resultDiv.innerHTML = `
+                    <div class="success-text">✅ ${result.message}</div>
+                    <div class="result">
+                        <strong>🎯 Synchronization Results:</strong><br>
+                        <span class="status-indicator status-fixed"></span>Payment Records Fixed: ${result.totalFixed}<br>
+                        <span class="status-indicator status-pending"></span>Users Processed: ${result.usersProcessed}<br>
+                        <span class="status-indicator ${result.errors.length > 0 ? 'status-error' : 'status-fixed'}"></span>Errors: ${result.errors.length}<br><br>
+                        
+                        ${result.errors.length > 0 ? `
+                            <strong>⚠️ Errors Encountered:</strong><br>
+                            <pre>${JSON.stringify(result.errors, null, 2)}</pre>
+                        ` : '<strong>🎉 All payment statuses synchronized successfully!</strong>'}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.debugUserPayment = async function() {
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const resultDiv = document.getElementById('debugResult');
+            
+            if (!phoneNumber) {
+                resultDiv.innerHTML = '<div class="error">❌ Please enter a phone number</div>';
+                return;
+            }
+            
+            currentPhoneNumber = phoneNumber;
+            resultDiv.innerHTML = '<div class="info">🔍 Debugging user payment status...</div>';
+            
+            try {
+                const result = await client.query("debugPayment:debugUserPayment", { phoneNumber });
+                
+                if (!result) {
+                    resultDiv.innerHTML = '<div class="error">❌ User not found</div>';
+                    return;
+                }
+                
+                const hasPaidEnrollments = result.userEnrollments?.some(e => e.paymentStatus === 'paid');
+                const hasPendingPayments = result.summary?.pendingPayments > 0;
+                const issueDetected = hasPaidEnrollments && hasPendingPayments;
+                
+                resultDiv.innerHTML = `
+                    <div class="${issueDetected ? 'error' : 'success-text'}">
+                        ${issueDetected ? '⚠️ PAYMENT SYNC ISSUE DETECTED!' : '✅ Payment status looks good'}
+                    </div>
+                    <div class="result">
+                        <strong>User:</strong> ${result.user?.fullName || 'N/A'} (${phoneNumber})<br>
+                        <strong>Student ID:</strong> ${result.user?.studentId || 'N/A'}<br><br>
+                        
+                        <strong>📊 Summary:</strong><br>
+                        • User Enrollments: ${result.summary?.userEnrollmentsCount || 0}<br>
+                        • Payment Records: ${result.summary?.paymentRecordsCount || 0}<br>
+                        • Pending Payments: ${result.summary?.pendingPayments || 0}<br>
+                        • Completed Payments: ${result.summary?.completedPayments || 0}<br><br>
+                        
+                        ${issueDetected ? `
+                            <div class="warning">
+                                <strong>🔧 Issue Details:</strong><br>
+                                User has paid enrollments but pending payment records.
+                                This causes the admin dashboard to show incorrect payment status.
+                            </div>
+                        ` : ''}
+                        
+                        <details>
+                            <summary><strong>📋 Detailed Data</strong></summary>
+                            <pre>${JSON.stringify(result, null, 2)}</pre>
+                        </details>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixUserPaymentStatus = async function() {
+            if (!currentPhoneNumber) {
+                document.getElementById('fixUserResult').innerHTML = '<div class="error">❌ Please debug a user first</div>';
+                return;
+            }
+            
+            const resultDiv = document.getElementById('fixUserResult');
+            resultDiv.innerHTML = '<div class="info">🔧 Fixing user payment status...</div>';
+            
+            try {
+                const result = await client.mutation("debugPayment:fixUserPaymentStatus", { 
+                    phoneNumber: currentPhoneNumber 
+                });
+                
+                resultDiv.innerHTML = `
+                    <div class="success-text">✅ ${result.message}</div>
+                    <div class="result">
+                        <strong>Fix Results:</strong><br>
+                        • User: ${currentPhoneNumber}<br>
+                        • Payments Updated: ${result.paymentsUpdated || 0}<br>
+                        • Status: ${result.success ? 'Success' : 'Failed'}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.syncMissingPayments = async function() {
+            const resultDiv = document.getElementById('syncResult');
+            resultDiv.innerHTML = '<div class="info">🔄 Syncing missing payments...</div>';
+            
+            try {
+                const result = await client.mutation("paymentTracking:syncMissingPayments");
+                
+                resultDiv.innerHTML = `
+                    <div class="success-text">✅ Sync completed successfully!</div>
+                    <div class="result">
+                        <strong>Sync Results:</strong><br>
+                        • Missing Payments Created: ${result.missingPaymentsCreated || 0}<br>
+                        • Enrollments Processed: ${result.enrollmentsProcessed || 0}<br>
+                        • User Enrollments Processed: ${result.userEnrollmentsProcessed || 0}<br>
+                        • Merchandise Orders Processed: ${result.merchandiseOrdersProcessed || 0}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixAllPendingPayments = async function() {
+            if (!confirm('⚠️ This will fix ALL users with payment sync issues using the legacy method. Continue?')) {
+                return;
+            }
+            
+            const resultDiv = document.getElementById('bulkFixResult');
+            resultDiv.innerHTML = '<div class="info">🔧 Fixing all pending payments... This may take a while...</div>';
+            
+            try {
+                const result = await client.mutation("debugPayment:fixAllPendingPayments", {});
+                
+                resultDiv.innerHTML = `
+                    <div class="success-text">✅ ${result.message}</div>
+                    <div class="result">
+                        <strong>Bulk Fix Results:</strong><br>
+                        • Users Fixed: ${result.usersFixed || 0}<br>
+                        • Total Payments Updated: ${result.totalUpdated || 0}<br>
+                        • Users Processed: ${result.usersProcessed || 0}<br>
+                        • Success Rate: ${result.usersProcessed > 0 ? Math.round((result.usersFixed / result.usersProcessed) * 100) : 0}%
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.getPaymentStats = async function() {
+            const resultDiv = document.getElementById('statsResult');
+            resultDiv.innerHTML = '<div class="info">📊 Getting payment statistics...</div>';
+            
+            try {
+                const result = await client.query("paymentTracking:getPaymentStatistics");
+                
+                resultDiv.innerHTML = `
+                    <div class="success-text">✅ Payment statistics retrieved</div>
+                    <div class="result">
+                        <strong>📊 Payment Statistics:</strong><br>
+                        • Total Payments: ${result.totalPayments || 0}<br>
+                        • Pending: ${result.pending || 0}<br>
+                        • Attempted: ${result.attempted || 0}<br>
+                        • Completed: ${result.completed || 0}<br>
+                        • Failed: ${result.failed || 0}<br><br>
+                        
+                        <strong>💰 Revenue:</strong><br>
+                        • Total Revenue: ₹${result.totalRevenue || 0}<br>
+                        • Average Payment: ₹${result.averagePayment || 0}<br><br>
+                        
+                        <strong>📈 Success Rate:</strong> ${result.successRate || 0}%<br><br>
+                        
+                        <strong>🎯 Health Status:</strong><br>
+                        <span class="status-indicator ${result.pending > 0 ? 'status-pending' : 'status-fixed'}"></span>
+                        ${result.pending > 0 ? `${result.pending} payments need attention` : 'All payments are properly synchronized'}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        // Auto-load stats on page load
+        window.addEventListener('load', () => {
+            getPaymentStats();
+        });
+    </script>
+</body>
+</html>

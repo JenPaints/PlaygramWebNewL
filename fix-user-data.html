@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix User Data - Admin Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 User Data Fixer Tool</h1>
+        
+        <div class="section">
+            <h2>📋 Purpose</h2>
+            <p>This tool fixes critical user data issues in the admin dashboard:</p>
+            <ul>
+                <li><strong>Missing userType:</strong> Sets default "student" for users without userType</li>
+                <li><strong>Missing status:</strong> Sets default "active" for users without status</li>
+                <li><strong>Missing counts:</strong> Initializes enrollment and session counters</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Step 1: Check Users with Missing Data</h2>
+            <button onclick="checkMissingData()">🔍 Check Missing Data</button>
+            <div id="missingDataResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 2: Fix User Types and Statuses</h2>
+            <p><strong>⚠️ This will set default values for users missing userType or status</strong></p>
+            <button onclick="fixUserTypesAndStatuses()">🔧 Fix User Types & Statuses</button>
+            <div id="fixTypesResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Fix Enrollment Counts</h2>
+            <p>This will recalculate enrollment counts based on actual data</p>
+            <button onclick="fixEnrollmentCounts()">📊 Fix Enrollment Counts</button>
+            <div id="fixCountsResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 4: Verify Fix</h2>
+            <button onclick="verifyFix()">✅ Verify All Data Fixed</button>
+            <div id="verifyResult"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ConvexHttpClient } from "https://cdn.skypack.dev/convex/browser";
+        
+        const client = new ConvexHttpClient("https://playgram-app.convex.cloud");
+        
+        window.checkMissingData = async function() {
+            const resultDiv = document.getElementById('missingDataResult');
+            resultDiv.innerHTML = '<div class="info">🔍 Checking for users with missing data...</div>';
+            
+            try {
+                const result = await client.query("userDataFixer:getUsersWithMissingData");
+                
+                if (result.length === 0) {
+                    resultDiv.innerHTML = '<div class="success">✅ All users have complete data!</div>';
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">⚠️ Found ${result.length} users with missing data:</div>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixUserTypesAndStatuses = async function() {
+            const resultDiv = document.getElementById('fixTypesResult');
+            resultDiv.innerHTML = '<div class="info">🔧 Fixing user types and statuses...</div>';
+            
+            try {
+                const result = await client.mutation("userDataFixer:fixUserTypesAndStatuses");
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Fixed ${result.fixedCount} out of ${result.totalUsers} users</div>
+                    <div class="result">
+                        <strong>Results:</strong><br>
+                        • Total Users: ${result.totalUsers}<br>
+                        • Users Fixed: ${result.fixedCount}<br>
+                        • Users Already OK: ${result.totalUsers - result.fixedCount}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixEnrollmentCounts = async function() {
+            const resultDiv = document.getElementById('fixCountsResult');
+            resultDiv.innerHTML = '<div class="info">📊 Fixing enrollment counts...</div>';
+            
+            try {
+                const result = await client.mutation("userDataFixer:fixUserEnrollmentCounts");
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Fixed enrollment counts for ${result.fixedCount} out of ${result.totalUsers} users</div>
+                    <div class="result">
+                        <strong>Results:</strong><br>
+                        • Total Users: ${result.totalUsers}<br>
+                        • Counts Fixed: ${result.fixedCount}<br>
+                        • Counts Already Correct: ${result.totalUsers - result.fixedCount}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        window.verifyFix = async function() {
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.innerHTML = '<div class="info">✅ Verifying all fixes...</div>';
+            
+            try {
+                const missingData = await client.query("userDataFixer:getUsersWithMissingData");
+                
+                if (missingData.length === 0) {
+                    resultDiv.innerHTML = `
+                        <div class="success">🎉 SUCCESS! All user data issues have been resolved!</div>
+                        <div class="result">
+                            <strong>✅ All users now have:</strong><br>
+                            • Valid userType (student/parent/coach/admin)<br>
+                            • Valid status (active/inactive/suspended)<br>
+                            • Proper enrollment counts<br>
+                            • Complete session tracking
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">⚠️ Still found ${missingData.length} users with missing data</div>
+                        <div class="result">
+                            <strong>Remaining Issues:</strong><br>
+                            <pre>${JSON.stringify(missingData, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        // Auto-check on page load
+        window.addEventListener('load', () => {
+            checkMissingData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fix Enrollment Payment Status</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: #28a745; background: #d4edda; padding: 10px; border-radius: 4px; }
+        .error { color: #dc3545; background: #f8d7da; padding: 10px; border-radius: 4px; }
+        .info { color: #0c5460; background: #d1ecf1; padding: 10px; border-radius: 4px; }
+        .warning { color: #856404; background: #fff3cd; padding: 10px; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button.danger { background: #dc3545; }
+        button.danger:hover { background: #c82333; }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .enrollment-card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .status-pending { border-left: 4px solid #ffc107; }
+        .status-paid { border-left: 4px solid #28a745; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Fix Enrollment Payment Status</h1>
+    <p>This tool fixes enrollments that show 'pending' payment status when they should be 'paid'.</p>
+    
+    <div class="section">
+        <h3>1. Check Specific User's Enrollments</h3>
+        <div style="margin: 15px 0;">
+            <input type="text" id="phoneNumber" placeholder="Enter phone number (e.g., +919986996468)" style="width: 300px; padding: 8px;">
+            <button onclick="checkUserEnrollments()">🔍 Check Enrollments</button>
+        </div>
+        <div id="userEnrollmentsResult"></div>
+    </div>
+    
+    <div class="section">
+        <h3>2. Fix Payment Status for User</h3>
+        <p>This will update all 'pending' payment statuses to 'paid' for the specified user:</p>
+        <div style="margin: 15px 0;">
+            <input type="text" id="fixPhoneNumber" placeholder="Enter phone number to fix" style="width: 300px; padding: 8px;">
+            <button onclick="fixUserPaymentStatus()" class="danger">🔧 Fix Payment Status</button>
+        </div>
+        <div id="fixResult"></div>
+    </div>
+    
+    <div class="section">
+        <h3>3. Fix All Pending Payment Statuses</h3>
+        <p class="warning">⚠️ This will fix ALL enrollments with pending payment status. Use with caution!</p>
+        <button onclick="fixAllPendingPayments()" class="danger">🔧 Fix All Pending Payments</button>
+        <div id="fixAllResult"></div>
+    </div>
+
+    <script>
+        // Simple fetch-based approach to call Convex functions
+        const CONVEX_URL = "https://intent-ibis-667.convex.cloud";
+        
+        async function callConvexMutation(functionName, args = {}) {
+            const response = await fetch(`${CONVEX_URL}/api/mutation`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    function: functionName,
+                    args: args
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            if (result.error) {
+                throw new Error(result.error.message || 'Unknown error');
+            }
+            
+            return result.value;
+        }
+        
+        async function callConvexQuery(functionName, args = {}) {
+            const response = await fetch(`${CONVEX_URL}/api/query`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    function: functionName,
+                    args: args
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            if (result.error) {
+                throw new Error(result.error.message || 'Unknown error');
+            }
+            
+            return result.value;
+        }
+        
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${content}</div>`;
+        }
+        
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<div class="info">Loading...</div>';
+        }
+        
+        window.checkUserEnrollments = async function() {
+            const phone = document.getElementById('phoneNumber').value;
+            if (!phone) {
+                showResult('userEnrollmentsResult', 'Please enter a phone number', 'error');
+                return;
+            }
+            
+            showLoading('userEnrollmentsResult');
+            try {
+                const enrollments = await callConvexQuery("userEnrollments:getUserEnrollmentsByPhone", {
+                    phoneNumber: phone
+                });
+                
+                if (enrollments.length === 0) {
+                    showResult('userEnrollmentsResult', 'No enrollments found for this phone number', 'warning');
+                    return;
+                }
+                
+                let html = `<h4>Found ${enrollments.length} enrollment(s):</h4>`;
+                enrollments.forEach((enrollment, idx) => {
+                    const statusClass = enrollment.paymentStatus === 'paid' ? 'status-paid' : 'status-pending';
+                    html += `
+                        <div class="enrollment-card ${statusClass}">
+                            <strong>Enrollment ${idx + 1}:</strong><br>
+                            Sport: ${enrollment.sport?.name || 'Unknown'}<br>
+                            Package: ${enrollment.packageType}<br>
+                            Enrollment Status: <strong>${enrollment.enrollmentStatus}</strong><br>
+                            Payment Status: <strong>${enrollment.paymentStatus}</strong><br>
+                            Amount: ₹${enrollment.paymentAmount}<br>
+                            Created: ${new Date(enrollment.createdAt).toLocaleDateString()}
+                        </div>
+                    `;
+                });
+                
+                showResult('userEnrollmentsResult', html, 'success');
+            } catch (error) {
+                showResult('userEnrollmentsResult', `Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.fixUserPaymentStatus = async function() {
+            const phone = document.getElementById('fixPhoneNumber').value;
+            if (!phone) {
+                showResult('fixResult', 'Please enter a phone number', 'error');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to fix payment status for ${phone}?`)) {
+                return;
+            }
+            
+            showLoading('fixResult');
+            try {
+                // First get the user
+                const user = await callConvexQuery("users:getUserByPhone", {
+                    phoneNumber: phone
+                });
+                
+                if (!user) {
+                    showResult('fixResult', 'User not found', 'error');
+                    return;
+                }
+                
+                // Get user enrollments
+                const enrollments = await callConvexQuery("userEnrollments:getUserEnrollmentsByPhone", {
+                    phoneNumber: phone
+                });
+                
+                if (enrollments.length === 0) {
+                    showResult('fixResult', 'No enrollments found for this user', 'warning');
+                    return;
+                }
+                
+                // Fix each pending enrollment
+                let fixedCount = 0;
+                for (const enrollment of enrollments) {
+                    if (enrollment.paymentStatus === 'pending') {
+                        await callConvexMutation("userEnrollments:updateEnrollmentPayment", {
+                            enrollmentId: enrollment._id,
+                            paymentStatus: 'paid'
+                        });
+                        
+                        // Also update enrollment status to active if it's not already
+                        if (enrollment.enrollmentStatus !== 'active') {
+                            await callConvexMutation("userEnrollments:updateEnrollmentStatus", {
+                                enrollmentId: enrollment._id,
+                                status: 'active'
+                            });
+                        }
+                        
+                        fixedCount++;
+                    }
+                }
+                
+                if (fixedCount > 0) {
+                    showResult('fixResult', `✅ Fixed ${fixedCount} enrollment(s). Payment status updated to 'paid' and enrollment status set to 'active'.`, 'success');
+                } else {
+                    showResult('fixResult', 'No pending payments found to fix.', 'info');
+                }
+                
+            } catch (error) {
+                showResult('fixResult', `Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.fixAllPendingPayments = async function() {
+            if (!confirm('Are you sure you want to fix ALL pending payment statuses? This cannot be undone.')) {
+                return;
+            }
+            
+            showLoading('fixAllResult');
+            try {
+                const result = await callConvexMutation("userEnrollments:fixEnrollmentPaymentStatuses", {});
+                
+                if (result.success) {
+                    showResult('fixAllResult', `✅ Fixed ${result.fixedCount} enrollment(s) out of ${result.totalPendingEnrollments} pending enrollments.`, 'success');
+                } else {
+                    showResult('fixAllResult', 'Failed to fix payment statuses', 'error');
+                }
+                
+            } catch (error) {
+                showResult('fixAllResult', `Error: ${error.message}`, 'error');
+            }
+        };
+    </script>
+</body>
+</html>

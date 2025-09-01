@@ -1,0 +1,343 @@
+/**
+ * Native Mobile Styles
+ * CSS for native mobile features including safe area, keyboard handling, and native feel
+ */
+
+/* Safe Area Variables - These will be set by the native mobile service */
+:root {
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-bottom: 0px;
+  --safe-area-inset-left: 0px;
+  --safe-area-inset-right: 0px;
+  --keyboard-height: 0px;
+}
+
+/* Safe Area Classes */
+.safe-area-top {
+  padding-top: var(--safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: var(--safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: var(--safe-area-inset-right);
+}
+
+.safe-area-all {
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+}
+
+.safe-area-horizontal {
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+}
+
+.safe-area-vertical {
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+/* Margin variants for safe area */
+.safe-margin-top {
+  margin-top: var(--safe-area-inset-top);
+}
+
+.safe-margin-bottom {
+  margin-bottom: var(--safe-area-inset-bottom);
+}
+
+.safe-margin-left {
+  margin-left: var(--safe-area-inset-left);
+}
+
+.safe-margin-right {
+  margin-right: var(--safe-area-inset-right);
+}
+
+.safe-margin-all {
+  margin-top: var(--safe-area-inset-top);
+  margin-bottom: var(--safe-area-inset-bottom);
+  margin-left: var(--safe-area-inset-left);
+  margin-right: var(--safe-area-inset-right);
+}
+
+/* Keyboard Handling */
+.keyboard-aware {
+  transition: transform 0.3s ease-in-out;
+}
+
+body.keyboard-open .keyboard-aware {
+  transform: translateY(calc(-1 * var(--keyboard-height) / 2));
+}
+
+.keyboard-spacer {
+  height: 0;
+  transition: height 0.3s ease-in-out;
+}
+
+body.keyboard-open .keyboard-spacer {
+  height: var(--keyboard-height);
+}
+
+/* Native-like scrolling */
+.native-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+/* Native-like buttons */
+.native-button {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.native-button:active {
+  transform: scale(0.98);
+}
+
+.native-button-primary {
+  background-color: #007AFF;
+  color: white;
+}
+
+.native-button-primary:hover {
+  background-color: #0056CC;
+}
+
+.native-button-secondary {
+  background-color: #F2F2F7;
+  color: #000;
+}
+
+.native-button-secondary:hover {
+  background-color: #E5E5EA;
+}
+
+/* Native-like inputs */
+.native-input {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid #C7C7CC;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  background-color: white;
+  transition: border-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.native-input:focus {
+  outline: none;
+  border-color: #007AFF;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+/* Native-like cards */
+.native-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Native-like list items */
+.native-list-item {
+  padding: 16px;
+  border-bottom: 1px solid #F2F2F7;
+  background-color: white;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.native-list-item:active {
+  background-color: #F2F2F7;
+}
+
+.native-list-item:last-child {
+  border-bottom: none;
+}
+
+/* Status bar overlay protection */
+.status-bar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--safe-area-inset-top);
+  background-color: inherit;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Full screen container that respects safe areas */
+.native-container {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  display: flex;
+  flex-direction: column;
+}
+
+.native-header {
+  padding-top: var(--safe-area-inset-top);
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+  background-color: white;
+  border-bottom: 1px solid #F2F2F7;
+}
+
+.native-content {
+  flex: 1;
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.native-footer {
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+  background-color: white;
+  border-top: 1px solid #F2F2F7;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .native-card {
+    background-color: #1C1C1E;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+  }
+  
+  .native-button-secondary {
+    background-color: #2C2C2E;
+    color: white;
+  }
+  
+  .native-button-secondary:hover {
+    background-color: #3A3A3C;
+  }
+  
+  .native-input {
+    background-color: #1C1C1E;
+    border-color: #3A3A3C;
+    color: white;
+  }
+  
+  .native-list-item {
+    background-color: #1C1C1E;
+    border-bottom-color: #3A3A3C;
+  }
+  
+  .native-list-item:active {
+    background-color: #2C2C2E;
+  }
+  
+  .native-header,
+  .native-footer {
+    background-color: #1C1C1E;
+    border-color: #3A3A3C;
+  }
+}
+
+/* Haptic feedback simulation for web */
+@media (hover: hover) {
+  .native-button:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media screen and (max-width: 768px) {
+  .native-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Hide scrollbars but keep functionality */
+.native-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.native-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Native-like animations */
+@keyframes native-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes native-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.native-fade-in {
+  animation: native-fade-in 0.3s ease-out;
+}
+
+.native-slide-up {
+  animation: native-slide-up 0.3s ease-out;
+}
+
+/* Utility classes for common native patterns */
+.native-divider {
+  height: 1px;
+  background-color: #F2F2F7;
+  margin: 0 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .native-divider {
+    background-color: #3A3A3C;
+  }
+}
+
+.native-text-primary {
+  color: #000;
+}
+
+.native-text-secondary {
+  color: #8E8E93;
+}
+
+@media (prefers-color-scheme: dark) {
+  .native-text-primary {
+    color: white;
+  }
+  
+  .native-text-secondary {
+    color: #8E8E93;
+  }
+}

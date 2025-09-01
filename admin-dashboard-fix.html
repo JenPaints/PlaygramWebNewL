@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard Fix Tool - Complete Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        .critical {
+            border-left: 5px solid #dc3545;
+            background-color: #f8d7da;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            margin: 10px 5px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #007bff;
+            transition: width 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Admin Dashboard Complete Fix Tool</h1>
+        
+        <div class="section critical">
+            <h2>🚨 Critical Issues Identified</h2>
+            <p>This tool addresses the following critical admin dashboard issues:</p>
+            <ul>
+                <li><strong>User Types showing as 'unknownunknown':</strong> Missing userType and status fields</li>
+                <li><strong>Payment status stuck on pending:</strong> Payment records not syncing with enrollment status</li>
+                <li><strong>Role changes not persisting:</strong> User type updates not reflecting properly</li>
+                <li><strong>Data inconsistency:</strong> Mismatched enrollment and payment data</li>
+            </ul>
+            <div class="warning">
+                <strong>⚠️ Important:</strong> Run these fixes in order. Each step builds on the previous one.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 System Health Check</h2>
+            <p>Check overall system health before applying fixes:</p>
+            <button onclick="runSystemHealthCheck()">🏥 Run Health Check</button>
+            <div id="healthCheckResult"></div>
+        </div>
+
+        <div class="grid">
+            <div class="section">
+                <h2>Step 1: Fix User Data Issues</h2>
+                <p><strong>Issue:</strong> Users showing as 'unknownunknown'</p>
+                <p><strong>Solution:</strong> Set default userType and status</p>
+                <button onclick="fixUserData()">🔧 Fix User Data</button>
+                <div id="userDataResult"></div>
+            </div>
+
+            <div class="section">
+                <h2>Step 2: Fix Payment Status Issues</h2>
+                <p><strong>Issue:</strong> Payments showing as pending after completion</p>
+                <p><strong>Solution:</strong> Sync payment records with enrollment status</p>
+                <button onclick="fixPaymentStatus()" class="danger">💳 Fix Payment Status</button>
+                <div id="paymentStatusResult"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Comprehensive Data Sync</h2>
+            <p>Synchronize all data across the system:</p>
+            <div class="grid">
+                <div>
+                    <button onclick="syncMissingPayments()">🔄 Sync Missing Payments</button>
+                    <div id="syncPaymentsResult"></div>
+                </div>
+                <div>
+                    <button onclick="fixEnrollmentCounts()">📊 Fix Enrollment Counts</button>
+                    <div id="enrollmentCountsResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Step 4: Test Specific User</h2>
+            <p>Test fixes for a specific user:</p>
+            <input type="text" id="testPhoneNumber" placeholder="Enter phone number (e.g., +919876543210)" />
+            <br>
+            <button onclick="testUserFix()">🧪 Test User Fix</button>
+            <div id="testUserResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 5: Final Verification</h2>
+            <p>Verify all issues have been resolved:</p>
+            <button onclick="runFinalVerification()">✅ Run Final Verification</button>
+            <div id="finalVerificationResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>📈 Progress Tracker</h2>
+            <div id="progressTracker">
+                <div>Overall Progress: <span id="progressText">0%</span></div>
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ConvexHttpClient } from "https://cdn.skypack.dev/convex/browser";
+        
+        const client = new ConvexHttpClient("https://playgram-app.convex.cloud");
+        let progress = 0;
+        const totalSteps = 5;
+        
+        function updateProgress(step) {
+            progress = (step / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+        }
+        
+        window.runSystemHealthCheck = async function() {
+            const resultDiv = document.getElementById('healthCheckResult');
+            resultDiv.innerHTML = '<div class="info">🏥 Running system health check...</div>';
+            
+            try {
+                // Check multiple system components
+                const [missingUserData, paymentStats, userStats] = await Promise.all([
+                    client.query("userDataFixer:getUsersWithMissingData"),
+                    client.query("paymentTracking:getPaymentStatistics"),
+                    client.query("users:getUserStatistics")
+                ]);
+                
+                const issues = [];
+                if (missingUserData.length > 0) {
+                    issues.push(`${missingUserData.length} users with missing data`);
+                }
+                if (paymentStats.pending > 0) {
+                    issues.push(`${paymentStats.pending} pending payments`);
+                }
+                
+                const healthStatus = issues.length === 0 ? 'healthy' : 'issues-detected';
+                
+                resultDiv.innerHTML = `
+                    <div class="${healthStatus === 'healthy' ? 'success' : 'error'}">
+                        ${healthStatus === 'healthy' ? '✅ System is healthy!' : '⚠️ Issues detected!'}
+                    </div>
+                    <div class="result">
+                        <strong>📊 System Overview:</strong><br>
+                        • Total Users: ${userStats?.totalUsers || 0}<br>
+                        • Active Users: ${userStats?.activeUsers || 0}<br>
+                        • Total Payments: ${paymentStats?.totalPayments || 0}<br>
+                        • Pending Payments: ${paymentStats?.pending || 0}<br><br>
+                        
+                        ${issues.length > 0 ? `
+                            <strong>🔧 Issues Found:</strong><br>
+                            ${issues.map(issue => `• ${issue}`).join('<br>')}
+                        ` : '<strong>✅ No issues found!</strong>'}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Health check failed: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixUserData = async function() {
+            const resultDiv = document.getElementById('userDataResult');
+            resultDiv.innerHTML = '<div class="info">🔧 Fixing user data issues...</div>';
+            
+            try {
+                const result = await client.mutation("userDataFixer:fixUserTypesAndStatuses");
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ User data fixed successfully!</div>
+                    <div class="result">
+                        <strong>Fix Results:</strong><br>
+                        • Total Users: ${result.totalUsers}<br>
+                        • Users Fixed: ${result.fixedCount}<br>
+                        • Success Rate: ${Math.round((result.fixedCount / result.totalUsers) * 100)}%
+                    </div>
+                `;
+                updateProgress(1);
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Fix failed: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixPaymentStatus = async function() {
+            const resultDiv = document.getElementById('paymentStatusResult');
+            resultDiv.innerHTML = '<div class="info">💳 Fixing payment status issues...</div>';
+            
+            try {
+                const result = await client.mutation("debugPayment:fixAllPendingPayments", {});
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Payment status fixed successfully!</div>
+                    <div class="result">
+                        <strong>Fix Results:</strong><br>
+                        • Users Fixed: ${result.usersFixed || 0}<br>
+                        • Payments Updated: ${result.totalUpdated || 0}<br>
+                        • Users Processed: ${result.usersProcessed || 0}
+                    </div>
+                `;
+                updateProgress(2);
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Fix failed: ${error.message}</div>`;
+            }
+        };
+        
+        window.syncMissingPayments = async function() {
+            const resultDiv = document.getElementById('syncPaymentsResult');
+            resultDiv.innerHTML = '<div class="info">🔄 Syncing missing payments...</div>';
+            
+            try {
+                const result = await client.mutation("paymentTracking:syncMissingPayments");
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Payment sync completed!</div>
+                    <div class="result">
+                        Missing Payments Created: ${result.missingPaymentsCreated || 0}
+                    </div>
+                `;
+                updateProgress(3);
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Sync failed: ${error.message}</div>`;
+            }
+        };
+        
+        window.fixEnrollmentCounts = async function() {
+            const resultDiv = document.getElementById('enrollmentCountsResult');
+            resultDiv.innerHTML = '<div class="info">📊 Fixing enrollment counts...</div>';
+            
+            try {
+                const result = await client.mutation("userDataFixer:fixUserEnrollmentCounts");
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Enrollment counts fixed!</div>
+                    <div class="result">
+                        Users Fixed: ${result.fixedCount}/${result.totalUsers}
+                    </div>
+                `;
+                updateProgress(4);
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Fix failed: ${error.message}</div>`;
+            }
+        };
+        
+        window.testUserFix = async function() {
+            const phoneNumber = document.getElementById('testPhoneNumber').value.trim();
+            const resultDiv = document.getElementById('testUserResult');
+            
+            if (!phoneNumber) {
+                resultDiv.innerHTML = '<div class="error">❌ Please enter a phone number</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="info">🧪 Testing user fix...</div>';
+            
+            try {
+                const result = await client.query("debugPayment:debugUserPayment", { phoneNumber });
+                
+                if (!result) {
+                    resultDiv.innerHTML = '<div class="error">❌ User not found</div>';
+                    return;
+                }
+                
+                const userOK = result.user?.userType && result.user?.status;
+                const paymentOK = result.summary?.pendingPayments === 0 || result.summary?.paidEnrollments === 0;
+                const overallOK = userOK && paymentOK;
+                
+                resultDiv.innerHTML = `
+                    <div class="${overallOK ? 'success' : 'error'}">
+                        ${overallOK ? '✅ User data is now correct!' : '⚠️ Issues still exist'}
+                    </div>
+                    <div class="result">
+                        <strong>User:</strong> ${result.user?.fullName || 'N/A'}<br>
+                        <strong>User Type:</strong> ${result.user?.userType || 'Missing'} ${userOK ? '✅' : '❌'}<br>
+                        <strong>Status:</strong> ${result.user?.status || 'Missing'} ${userOK ? '✅' : '❌'}<br>
+                        <strong>Payment Status:</strong> ${paymentOK ? 'OK' : 'Issues'} ${paymentOK ? '✅' : '❌'}<br>
+                        <strong>Pending Payments:</strong> ${result.summary?.pendingPayments || 0}<br>
+                        <strong>Paid Enrollments:</strong> ${result.summary?.paidEnrollments || 0}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Test failed: ${error.message}</div>`;
+            }
+        };
+        
+        window.runFinalVerification = async function() {
+            const resultDiv = document.getElementById('finalVerificationResult');
+            resultDiv.innerHTML = '<div class="info">✅ Running final verification...</div>';
+            
+            try {
+                const [missingUserData, paymentStats] = await Promise.all([
+                    client.query("userDataFixer:getUsersWithMissingData"),
+                    client.query("paymentTracking:getPaymentStatistics")
+                ]);
+                
+                const allIssuesFixed = missingUserData.length === 0 && paymentStats.pending === 0;
+                
+                resultDiv.innerHTML = `
+                    <div class="${allIssuesFixed ? 'success' : 'error'}">
+                        ${allIssuesFixed ? '🎉 ALL ISSUES RESOLVED!' : '⚠️ Some issues remain'}
+                    </div>
+                    <div class="result">
+                        <strong>📊 Final Status:</strong><br>
+                        • Users with missing data: ${missingUserData.length} ${missingUserData.length === 0 ? '✅' : '❌'}<br>
+                        • Pending payments: ${paymentStats.pending} ${paymentStats.pending === 0 ? '✅' : '❌'}<br>
+                        • Total payments: ${paymentStats.totalPayments}<br>
+                        • Success rate: ${paymentStats.successRate}%<br><br>
+                        
+                        ${allIssuesFixed ? `
+                            <strong>🎉 SUCCESS!</strong><br>
+                            All admin dashboard issues have been resolved:
+                            <ul>
+                                <li>✅ User types and statuses are now properly displayed</li>
+                                <li>✅ Payment statuses are synchronized</li>
+                                <li>✅ Role changes will persist correctly</li>
+                                <li>✅ Data consistency is maintained</li>
+                            </ul>
+                        ` : `
+                            <strong>🔧 Next Steps:</strong><br>
+                            ${missingUserData.length > 0 ? '• Run Step 1 again to fix remaining user data issues<br>' : ''}
+                            ${paymentStats.pending > 0 ? '• Run Step 2 again to fix remaining payment issues<br>' : ''}
+                        `}
+                    </div>
+                `;
+                
+                if (allIssuesFixed) {
+                    updateProgress(5);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Verification failed: ${error.message}</div>`;
+            }
+        };
+        
+        // Auto-run health check on page load
+        window.addEventListener('load', () => {
+            runSystemHealthCheck();
+        });
+    </script>
+</body>
+</html>

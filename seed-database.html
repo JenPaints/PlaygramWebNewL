@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Database Seeding Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: #28a745; background: #d4edda; padding: 10px; border-radius: 4px; }
+        .error { color: #dc3545; background: #f8d7da; padding: 10px; border-radius: 4px; }
+        .info { color: #0c5460; background: #d1ecf1; padding: 10px; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .loading { opacity: 0.6; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <h1>🌱 Database Seeding Tool</h1>
+    <p>This tool will populate your Convex database with initial data for sports programs, testimonials, and other content.</p>
+    
+    <div class="section">
+        <h3>1. Seed Sports Data</h3>
+        <p>Add initial sports programs (Football, Basketball, Badminton, Swimming)</p>
+        <button onclick="seedSports()">Seed Sports Data</button>
+        <div id="sportsResult"></div>
+    </div>
+    
+    <div class="section">
+        <h3>2. Seed Testimonials</h3>
+        <p>Add customer testimonials for each sport</p>
+        <button onclick="seedTestimonials()">Seed Testimonials</button>
+        <div id="testimonialsResult"></div>
+    </div>
+    
+    <div class="section">
+        <h3>3. Seed All Data</h3>
+        <p>Run all seeding operations at once</p>
+        <button onclick="seedAll()">Seed All Data</button>
+        <div id="allResult"></div>
+    </div>
+    
+    <div class="section">
+        <h3>4. Check Database Status</h3>
+        <p>Verify what data exists in the database</p>
+        <button onclick="checkDatabase()">Check Database</button>
+        <div id="checkResult"></div>
+    </div>
+
+    <script>
+        // Simple fetch-based approach to call Convex functions
+        const CONVEX_URL = "https://intent-ibis-667.convex.cloud";
+        
+        async function callConvexMutation(functionName, args = {}) {
+            const response = await fetch(`${CONVEX_URL}/api/mutation`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    function: functionName,
+                    args: args
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            if (result.error) {
+                throw new Error(result.error.message || 'Unknown error');
+            }
+            
+            return result.value;
+        }
+        
+        async function callConvexQuery(functionName, args = {}) {
+            const response = await fetch(`${CONVEX_URL}/api/query`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    function: functionName,
+                    args: args
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            if (result.error) {
+                throw new Error(result.error.message || 'Unknown error');
+            }
+            
+            return result.value;
+        }
+        
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${content}</div>`;
+        }
+        
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<div class="info">Loading...</div>';
+        }
+        
+        window.seedSports = async function() {
+            showLoading('sportsResult');
+            try {
+                const result = await callConvexMutation("seedData:seedSportsData", {});
+                showResult('sportsResult', `✅ ${result}`, 'success');
+            } catch (error) {
+                showResult('sportsResult', `❌ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.seedTestimonials = async function() {
+            showLoading('testimonialsResult');
+            try {
+                const result = await callConvexMutation("seedData:seedTestimonialsData", {});
+                showResult('testimonialsResult', `✅ ${result}`, 'success');
+            } catch (error) {
+                showResult('testimonialsResult', `❌ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.seedAll = async function() {
+            showLoading('allResult');
+            try {
+                const sportsResult = await callConvexMutation("seedData:seedSportsData", {});
+                const testimonialsResult = await callConvexMutation("seedData:seedTestimonialsData", {});
+                
+                showResult('allResult', `✅ Sports: ${sportsResult}<br>✅ Testimonials: ${testimonialsResult}`, 'success');
+            } catch (error) {
+                showResult('allResult', `❌ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.checkDatabase = async function() {
+            showLoading('checkResult');
+            try {
+                const sports = await callConvexQuery("sports:getAllSports", {});
+                const testimonials = await callConvexQuery("testimonials:getAllTestimonials", {});
+                
+                let html = `<h4>Database Status:</h4>`;
+                html += `<p><strong>Sports:</strong> ${sports.length} records</p>`;
+                html += `<p><strong>Testimonials:</strong> ${testimonials.length} records</p>`;
+                
+                if (sports.length > 0) {
+                    html += `<p><strong>Available Sports:</strong> ${sports.map(s => s.name).join(', ')}</p>`;
+                }
+                
+                showResult('checkResult', html, sports.length > 0 ? 'success' : 'info');
+            } catch (error) {
+                showResult('checkResult', `❌ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        // Auto-check database status on load
+        window.addEventListener('load', () => {
+            setTimeout(checkDatabase, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,747 @@
+/* Import mobile-specific styles */
+@import './styles/mobile.css';
+@import './styles/dynamic-mobile.css';
+@import './styles/native.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-light: #ffffff;
+  --color-dark: #171717;
+}
+
+.accent-text {
+  @apply text-slate-600;
+}
+
+/* Responsive Design Utilities */
+@layer utilities {
+  /* Mobile-first responsive containers */
+  .container-responsive {
+    @apply w-full px-4 sm:px-6 lg:px-8 mx-auto;
+  }
+  
+  /* Safe Area Utilities for Mobile Apps */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .safe-area-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .safe-area-y {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-all {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Safe area margins */
+  .safe-area-mt {
+    margin-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-mb {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-ml {
+    margin-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-mr {
+    margin-right: env(safe-area-inset-right);
+  }
+  
+  /* Safe area positioning */
+  .safe-top {
+    top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-left {
+    left: env(safe-area-inset-left);
+  }
+  
+  .safe-right {
+    right: env(safe-area-inset-right);
+  }
+  
+  /* Mobile app specific utilities */
+  .mobile-header {
+    @apply fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200;
+    padding-top: calc(env(safe-area-inset-top) + 0.75rem);
+    padding-bottom: 0.75rem;
+    padding-left: calc(env(safe-area-inset-left) + 1rem);
+    padding-right: calc(env(safe-area-inset-right) + 1rem);
+  }
+  
+  .mobile-footer {
+    @apply fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200;
+    padding-top: 0.25rem;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .mobile-content {
+    padding-top: calc(env(safe-area-inset-top) + 4rem);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Responsive text sizes */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+  
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+  
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+  
+  .text-responsive-2xl {
+    @apply text-2xl sm:text-3xl lg:text-4xl;
+  }
+  
+  /* Responsive spacing */
+  .spacing-responsive-sm {
+    @apply p-4 sm:p-6;
+  }
+  
+  .spacing-responsive-md {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+  
+  .spacing-responsive-lg {
+    @apply p-6 sm:p-8 lg:p-12;
+  }
+  
+  /* Responsive grids */
+  .grid-responsive-1-2 {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6;
+  }
+  
+  .grid-responsive-1-2-3 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  
+  .grid-responsive-1-3 {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  
+  /* Mobile menu utilities */
+  .mobile-menu-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden;
+  }
+  
+  .mobile-menu-panel {
+    @apply fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0;
+  }
+  
+  /* Touch-friendly buttons */
+  .btn-touch {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Responsive modal */
+  .modal-responsive {
+    @apply w-full max-w-xs sm:max-w-md lg:max-w-2xl max-h-[95vh] sm:max-h-[90vh];
+  }
+  
+  /* Safe area padding for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Responsive flex utilities */
+  .flex-responsive-col {
+    @apply flex flex-col sm:flex-row;
+  }
+  
+  .flex-responsive-row {
+    @apply flex flex-row sm:flex-col lg:flex-row;
+  }
+}
+
+body {
+  font-family:
+    "Manrope",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+  color: #171717;
+  background: #ffffff;
+  /* Mobile optimizations */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+  /* Improve touch scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile viewport optimizations */
+@media screen and (max-width: 768px) {
+  html {
+    /* Prevent zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  /* Improve button touch targets */
+  button, [role="button"], input[type="submit"], input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve form input touch targets */
+  input, textarea, select {
+    min-height: 44px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover\:scale-105:hover {
+    transform: none;
+  }
+  
+  /* Add touch-friendly active states */
+  button:active, [role="button"]:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Crisp images on retina displays */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Ensure text colors are properly applied */
+* {
+  color: inherit;
+}
+
+/* Override any potential conflicts with text color utilities */
+.text-gray-900 { color: #111827 !important; }
+.text-gray-800 { color: #1f2937 !important; }
+.text-gray-700 { color: #374151 !important; }
+.text-gray-600 { color: #4b5563 !important; }
+.text-gray-500 { color: #6b7280 !important; }
+.text-gray-400 { color: #9ca3af !important; }
+.text-gray-300 { color: #d1d5db !important; }
+.text-gray-200 { color: #e5e7eb !important; }
+.text-gray-100 { color: #f3f4f6 !important; }
+.text-black { color: #000000 !important; }
+.text-white { color: #ffffff !important; }
+
+/* Additional color utilities that might be used */
+.text-red-600 { color: #dc2626 !important; }
+.text-red-800 { color: #991b1b !important; }
+.text-green-600 { color: #16a34a !important; }
+.text-green-800 { color: #166534 !important; }
+.text-blue-600 { color: #2563eb !important; }
+.text-blue-800 { color: #1e40af !important; }
+
+/* Seamless section transitions */
+.section-transition {
+  @apply relative;
+}
+
+.section-transition::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, rgba(17, 24, 39, 0.5));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.section-transition::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to top, transparent, rgba(17, 24, 39, 0.5));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  /* Prevent horizontal scroll on mobile */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Improve touch targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better text rendering on mobile */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Improve video performance on mobile */
+  video {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Better focus states for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #E11C41;
+  outline-offset: 2px;
+}
+
+/* Enhanced transitions for components */
+.component-fade-in {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Auth container styling */
+.auth-container {
+  @apply bg-white rounded-2xl shadow-xl border border-gray-100 backdrop-blur-sm;
+}
+
+/* Logo styling for auth */
+.auth-logo {
+  @apply transition-transform duration-300 hover:scale-105;
+}
+
+/* OTP input styling */
+.otp-input {
+  @apply transition-all duration-200 hover:shadow-md focus:shadow-lg;
+}
+
+.otp-input:focus {
+  @apply ring-2 ring-blue-500 ring-opacity-50;
+}
+
+/* Enhanced error styling */
+.auth-error {
+  @apply bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-700 rounded-lg p-3 shadow-sm;
+}
+
+/* Success styling */
+.auth-success {
+  @apply bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-green-700 rounded-lg p-3 shadow-sm;
+}
+
+/* Info styling */
+.auth-info {
+  @apply bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 rounded-lg p-3 shadow-sm;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* only use this to update the style of the auth input fields. use a different class for all other input fields */
+.auth-input-field {
+  @apply w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 shadow-sm hover:shadow-md hover:border-gray-400;
+}
+
+/* only use this to update the style of the auth buttons. use the button class for all other buttons */
+.auth-button {
+  @apply w-full px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+}
+
+/* Enrollment Modal Specific Styles */
+.enrollment-modal {
+  color: #111827 !important;
+}
+
+.enrollment-modal h1,
+.enrollment-modal h2,
+.enrollment-modal h3,
+.enrollment-modal h4,
+.enrollment-modal h5,
+.enrollment-modal h6 {
+  color: #111827 !important;
+}
+
+.enrollment-modal p,
+.enrollment-modal span,
+.enrollment-modal div,
+.enrollment-modal label {
+  color: #111827 !important;
+}
+
+.enrollment-modal .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.enrollment-modal .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+.enrollment-modal .text-gray-900 {
+  color: #111827 !important;
+}
+
+.enrollment-modal .text-gray-800 {
+  color: #1f2937 !important;
+}
+
+.enrollment-modal .text-gray-700 {
+  color: #374151 !important;
+}
+
+/* Global text color fixes */
+.text-visible {
+  color: #111827 !important;
+}
+
+/* Ensure all text in white backgrounds is dark */
+.bg-white,
+.bg-gray-50,
+.bg-gray-100 {
+  color: #111827;
+}
+
+.bg-white *,
+.bg-gray-50 *,
+.bg-gray-100 * {
+  color: inherit;
+}
+
+/* Fix for any potential CSS conflicts */
+div:not([class*="bg-"]):not([class*="text-white"]) {
+  color: #111827;
+}
+
+/* Ensure proper text visibility in all components */
+.component-text-fix {
+  color: #111827 !important;
+}
+
+.component-text-fix h1,
+.component-text-fix h2,
+.component-text-fix h3,
+.component-text-fix h4,
+.component-text-fix h5,
+.component-text-fix h6,
+.component-text-fix p,
+.component-text-fix span,
+.component-text-fix div,
+.component-text-fix label {
+  color: inherit !important;
+}
+
+/* Specific fixes for common text color classes */
+.component-text-fix .text-gray-900 { color: #111827 !important; }
+.component-text-fix .text-gray-800 { color: #1f2937 !important; }
+.component-text-fix .text-gray-700 { color: #374151 !important; }
+.component-text-fix .text-gray-600 { color: #4b5563 !important; }
+.component-text-fix .text-gray-500 { color: #6b7280 !important; }
+
+/* Debug mode - uncomment to see which elements have text color issues */
+/*
+* {
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid red !important;
+}
+*/
+
+/* Gradient Button Styles */
+@layer base {
+  @property --pos-x {
+    syntax: '<percentage>';
+    initial-value: 11.14%;
+    inherits: false;
+  }
+
+  @property --pos-y {
+    syntax: '<percentage>';
+    initial-value: 140%;
+    inherits: false;
+  }
+
+  @property --spread-x {
+    syntax: '<percentage>';
+    initial-value: 150%;
+    inherits: false;
+  }
+
+  @property --spread-y {
+    syntax: '<percentage>';
+    initial-value: 180.06%;
+    inherits: false;
+  }
+
+  @property --color-1 {
+    syntax: '<color>';
+    initial-value: #D7243F;
+    inherits: false;
+  }
+
+  @property --color-2 {
+    syntax: '<color>';
+    initial-value: #89D3EC;
+    inherits: false;
+  }
+
+  @property --color-3 {
+    syntax: '<color>';
+    initial-value: #D7243F;
+    inherits: false;
+  }
+
+  @property --color-4 {
+    syntax: '<color>';
+    initial-value: #89D3EC;
+    inherits: false;
+  }
+
+  @property --color-5 {
+    syntax: '<color>';
+    initial-value: #D7243F;
+    inherits: false;
+  }
+
+  @property --border-angle {
+    syntax: '<angle>';
+    initial-value: 20deg;
+    inherits: true;
+  }
+
+  @property --border-color-1 {
+    syntax: '<color>';
+    initial-value: hsla(340, 75%, 60%, 0.2);
+    inherits: true;
+  }
+
+  @property --border-color-2 {
+    syntax: '<color>';
+    initial-value: hsla(340, 75%, 40%, 0.75);
+    inherits: true;
+  }
+
+  @property --stop-1 {
+    syntax: '<percentage>';
+    initial-value: 37.35%;
+    inherits: false;
+  }
+
+  @property --stop-2 {
+    syntax: '<percentage>';
+    initial-value: 61.36%;
+    inherits: false;
+  }
+
+  @property --stop-3 {
+    syntax: '<percentage>';
+    initial-value: 78.42%;
+    inherits: false;
+  }
+
+  @property --stop-4 {
+    syntax: '<percentage>';
+    initial-value: 89.52%;
+    inherits: false;
+  }
+
+  @property --stop-5 {
+    syntax: '<percentage>';
+    initial-value: 100%;
+    inherits: false;
+  }
+}
+
+@layer components {
+  .gradient-button {
+    @apply relative appearance-none cursor-pointer;
+    background: radial-gradient(var(--spread-x) var(--spread-y) at var(--pos-x) var(--pos-y),
+        var(--color-1) var(--stop-1),
+        var(--color-2) var(--stop-2),
+        var(--color-3) var(--stop-3),
+        var(--color-4) var(--stop-4),
+        var(--color-5) var(--stop-5));
+    transition:
+      --pos-x 0.5s,
+      --pos-y 0.5s,
+      --spread-x 0.5s,
+      --spread-y 0.5s,
+      --color-1 0.5s,
+      --color-2 0.5s,
+      --color-3 0.5s,
+      --color-4 0.5s,
+      --color-5 0.5s,
+      --border-angle 0.5s,
+      --border-color-1 0.5s,
+      --border-color-2 0.5s,
+      --stop-1 0.5s,
+      --stop-2 0.5s,
+      --stop-3 0.5s,
+      --stop-4 0.5s,
+      --stop-5 0.5s;
+  }
+
+  .gradient-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(var(--border-angle),
+        var(--border-color-1),
+        var(--border-color-2));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .gradient-button:hover {
+    --pos-x: 0%;
+    --pos-y: 91.51%;
+    --spread-x: 120.24%;
+    --spread-y: 103.18%;
+    --color-1: #89D3EC;
+    --color-2: #D7243F;
+    --color-3: #89D3EC;
+    --color-4: #D7243F;
+    --color-5: #89D3EC;
+    --border-angle: 190deg;
+    --border-color-1: hsla(340, 78%, 90%, 0.1);
+    --border-color-2: hsla(340, 75%, 90%, 0.6);
+    --stop-1: 0%;
+    --stop-2: 8.8%;
+    --stop-3: 21.44%;
+    --stop-4: 71.34%;
+    --stop-5: 85.76%;
+  }
+
+  .gradient-button-playgram {
+    --color-1: #D7243F;
+    --color-2: #89D3EC;
+    --color-3: #D7243F;
+    --color-4: #89D3EC;
+    --color-5: #D7243F;
+    --border-angle: 200deg;
+    --border-color-1: hsla(200, 75%, 90%, 0.6);
+    --border-color-2: hsla(200, 50%, 90%, 0.15);
+  }
+
+  .gradient-button-playgram:hover {
+    --pos-x: 0%;
+    --pos-y: 95.51%;
+    --spread-x: 110.24%;
+    --spread-y: 110.2%;
+    --color-1: #89D3EC;
+    --color-2: #D7243F;
+    --color-3: #89D3EC;
+    --color-4: #D7243F;
+    --color-5: #89D3EC;
+    --stop-1: 0%;
+    --stop-2: 10%;
+    --stop-3: 35.44%;
+    --stop-4: 71.34%;
+    --stop-5: 90.76%;
+    --border-angle: 210deg;
+    --border-color-1: hsla(200, 75%, 90%, 0.2);
+    --border-color-2: hsla(200, 50%, 90%, 0.75);
+  }
+
+
+}

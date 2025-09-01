@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "PLAYGRAMMING",
+			"path": "."
+		},
+		{
+			"name": "Playgram-icons",
+			"path": "../Playgram-icons"
+		}
+	],
+	"settings": {}
+}

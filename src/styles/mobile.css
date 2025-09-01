@@ -1,0 +1,703 @@
+/* Mobile-specific styles for Capacitor app */
+
+/* Safe area handling for iOS notch and Android navigation */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+.safe-area-all {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Status bar safe area - ensures content doesn't overlap with status bar */
+.status-bar-safe {
+  padding-top: max(env(safe-area-inset-top), 44px);
+  /* 44px is standard status bar height */
+}
+
+/* Mobile header with proper safe area handling */
+.mobile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  padding-top: max(env(safe-area-inset-top, 0px) + 12px, 56px);
+  /* Ensure minimum height */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile footer with proper safe area handling */
+.mobile-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: #1f2937;
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+  /* Ensure minimum padding */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Content area that respects both header and footer safe areas */
+.mobile-content-safe {
+  padding-top: max(env(safe-area-inset-top, 0px) + 80px, 124px);
+  /* Header height + safe area */
+  padding-bottom: max(env(safe-area-inset-bottom, 0px) + 80px, 88px);
+  /* Footer height + safe area */
+  min-height: 100vh;
+}
+
+/* Mobile app specific styles */
+.mobile-app {
+  /* Prevent overscroll bounce on iOS */
+  overscroll-behavior: none;
+  /* Ensure full viewport coverage */
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Dynamic viewport height for mobile browsers */
+}
+
+.mobile-content {
+  /* Ensure content doesn't go behind system UI */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+
+/* Viewport meta adjustments for mobile */
+@supports (height: 100dvh) {
+  .mobile-app {
+    min-height: 100dvh;
+  }
+
+  .mobile-content {
+    min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+}
+
+/* Status bar styling for mobile */
+.status-bar-light {
+  --ion-statusbar-color: #ffffff;
+}
+
+.status-bar-dark {
+  --ion-statusbar-color: #000000;
+}
+
+/* Mobile navigation adjustments */
+.mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch-friendly button sizes */
+.mobile-button {
+  min-height: 44px;
+  /* iOS recommended touch target */
+  min-width: 44px;
+}
+
+/* Prevent text selection on mobile */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Mobile-optimized scrolling */
+.mobile-scroll {
+  /* Smooth scrolling for mobile */
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbars on mobile */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile-specific animations */
+@media (prefers-reduced-motion: no-preference) {
+  .mobile-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .mobile-slide-out {
+    animation: slideOut 0.3s ease-in;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+/* Mobile keyboard handling */
+.keyboard-adjust {
+  /* Adjust for virtual keyboard */
+  padding-bottom: env(keyboard-inset-height, 0px);
+}
+
+/* Mobile-specific utility classes */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Native mobile app styling */
+.native-mobile-container {
+  /* Full viewport coverage with safe areas */
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #f9fafb;
+
+  /* iOS specific adjustments */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Prevent bounce scrolling */
+  overscroll-behavior: none;
+
+  /* Safe area handling */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Native header styling */
+.native-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  /* Safe area for status bar */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+
+  /* Content padding */
+  padding-bottom: 12px;
+}
+
+.native-header-content {
+  padding: 12px 16px 0;
+  min-height: 44px;
+  /* Minimum touch target */
+}
+
+/* Native footer styling */
+.native-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #ffffff;
+
+  /* Safe area for home indicator */
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+
+  /* Shadow for depth */
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Content that respects native header and footer */
+.native-content {
+  /* Calculate proper spacing */
+  padding-top: calc(env(safe-area-inset-top) + 68px);
+  /* Status bar + header */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+  /* Home indicator + footer */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+
+  /* Minimum height */
+  min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 148px);
+  min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 148px);
+}
+
+/* Fallback for devices without safe-area-inset support */
+@supports not (padding: env(safe-area-inset-top)) {
+  .native-header {
+    padding-top: 44px;
+    /* Standard status bar height */
+  }
+
+  .native-footer {
+    padding-bottom: 34px;
+    /* Standard home indicator area */
+  }
+
+  .native-content {
+    padding-top: 112px;
+    /* 44px status + 68px header */
+    padding-bottom: 114px;
+    /* 34px home + 80px footer */
+    min-height: calc(100vh - 226px);
+  }
+}
+
+/* Android-specific adjustments */
+@media screen and (max-width: 768px) {
+
+  /* Android navigation bar handling */
+  .android-nav-bar {
+    padding-bottom: max(env(safe-area-inset-bottom), 48px);
+  }
+
+  /* Ensure content doesn't get hidden behind Android navigation */
+  .native-content {
+    padding-bottom: max(env(safe-area-inset-bottom) + 80px, 128px);
+  }
+}
+
+/* iOS-specific adjustments */
+@supports (-webkit-appearance: none) {
+
+  /* iOS home indicator area */
+  .native-footer {
+    padding-bottom: max(env(safe-area-inset-bottom), 34px);
+  }
+
+  /* iOS status bar (including notch) */
+  .native-header {
+    padding-top: max(env(safe-area-inset-top), 44px);
+  }
+}
+
+/* Landscape mode adjustments */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .native-header {
+    padding-top: max(env(safe-area-inset-top), 24px);
+  }
+
+  .native-content {
+    padding-top: calc(env(safe-area-inset-top) + 56px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 60px);
+  }
+
+  .native-footer {
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  }
+}
+
+/* Haptic feedback visual indicator */
+.haptic-feedback {
+  transition: transform 0.1s ease;
+}
+
+.haptic-feedback:active {
+  transform: scale(0.95);
+}
+
+/* Mobile modal adjustments */
+.mobile-modal {
+  /* Full screen on mobile */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+/* Mobile form styling */
+.mobile-form-input {
+  /* Larger touch targets */
+  min-height: 48px;
+  font-size: 16px;
+  /* Prevent zoom on iOS */
+}
+
+/* Mobile-specific loading states */
+.mobile-loading {
+  /* Prevent interaction during loading */
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Swipe gesture indicators */
+.swipe-indicator {
+  position: relative;
+}
+
+.swipe-indicator::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+/* Mobile-specific error states */
+.mobile-error {
+  padding: 16px;
+  margin: 16px;
+  border-radius: 8px;
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+}
+
+/* Mobile pull-to-refresh styling */
+.pull-to-refresh {
+  /* Custom pull-to-refresh indicator */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  color: #666;
+}
+
+/* Mobile-specific focus states */
+.mobile-focus:focus {
+  outline: 2px solid #007AFF;
+  outline-offset: 2px;
+}
+
+/* Prevent zoom on input focus (iOS) */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* Mobile-specific card styling */
+.mobile-card {
+  margin: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile navigation transitions */
+.mobile-nav-transition {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile content with navigation bars - uses dynamic layout calculations */
+.mobile-content-with-nav {
+  /* Use the calculated heights from the dynamic layout hook */
+  padding-top: var(--header-total-height, calc(env(safe-area-inset-top, 0px) + 80px));
+  padding-bottom: var(--footer-total-height, calc(env(safe-area-inset-bottom, 0px) + 100px));
+  /* Side padding for safe areas */
+  padding-left: var(--safe-area-left, env(safe-area-inset-left, 0px));
+  padding-right: var(--safe-area-right, env(safe-area-inset-right, 0px));
+  /* Use calculated content height */
+  min-height: var(--content-available-height, calc(100vh - 180px));
+}
+
+/* Fallback for when CSS variables aren't available */
+@supports not (padding: var(--header-total-height)) {
+  .mobile-content-with-nav {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 80px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    min-height: calc(100vh - 180px);
+  }
+}
+
+/* Enhanced modal scrolling */
+.modal-scroll-container {
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  /* Prevent overscroll bounce */
+  overscroll-behavior: contain;
+  /* Custom scrollbar for webkit browsers */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  /* Ensure content can scroll past bottom buttons */
+  padding-bottom: 120px !important;
+}
+
+.modal-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.modal-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+/* Modal content with bottom buttons - ensures scrollable content has enough space */
+.modal-content-with-buttons {
+  /* Add extra padding to ensure content is accessible above fixed buttons */
+  padding-bottom: 140px !important;
+}
+
+/* Fixed bottom buttons in modals */
+.modal-fixed-bottom {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  /* Ensure buttons are always accessible */
+  margin-top: auto;
+}
+
+/* Scrollable modal body */
+.modal-scrollable-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Ensure smooth scrolling */
+  scroll-behavior: smooth;
+  /* Prevent overscroll bounce */
+  overscroll-behavior: contain;
+  /* Add padding to ensure content doesn't get cut off */
+  padding-bottom: 20px;
+}
+
+/* Full height modal container */
+.modal-full-height {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal content area that takes remaining space */
+.modal-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* Important for flex scrolling */
+}
+
+/* Mobile-specific spacing */
+.mobile-spacing {
+  padding: 16px;
+}
+
+.mobile-spacing-sm {
+  padding: 8px;
+}
+
+.mobile-spacing-lg {
+  padding: 24px;
+}
+
+/* Add
+itional scrolling fixes for mobile views */
+.mobile-view-container {
+  /* Ensure full height and proper scrolling */
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mobile-view-content {
+  /* Scrollable content area */
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Add padding to ensure content is accessible */
+  padding-bottom: 120px;
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  /* Prevent overscroll bounce */
+  overscroll-behavior: contain;
+}
+
+/* Fix for iOS Safari bottom safe area in modals */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .modal-fixed-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  }
+
+  .modal-content-with-buttons {
+    padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Ensure buttons are always accessible on all devices */
+.button-accessible-spacing {
+  margin-bottom: 120px;
+}
+
+/* Fix for Android keyboard overlay */
+@media screen and (max-height: 600px) {
+  .modal-content-with-buttons {
+    padding-bottom: 160px !important;
+  }
+}
+
+/* Landscape mode adjustments for modals */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .modal-content-with-buttons {
+    padding-bottom: 100px !important;
+  }
+
+  .modal-fixed-bottom {
+    padding: 8px 16px;
+    padding-bottom: max(env(safe-area-inset-bottom), 8px);
+  }
+}
+
+/* Ensure scrollable areas work properly on all mobile browsers */
+.mobile-scroll-fix {
+  /* WebKit overflow scrolling for smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Ensure proper scrolling behavior */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Prevent momentum scrolling issues */
+  overscroll-behavior-y: contain;
+}
+
+/* Fix for content getting cut off behind navigation */
+.content-with-nav-spacing {
+  /* Dynamic padding based on navigation height */
+  padding-top: var(--nav-height, 80px);
+  padding-bottom: var(--nav-height, 100px);
+  /* Minimum height to ensure scrollability */
+  min-height: calc(100vh - var(--nav-height, 180px));
+}
+
+/* Emergency fix for any remaining scrolling issues */
+.force-scrollable {
+  overflow-y: auto !important;
+  max-height: calc(100vh - 200px) !important;
+  padding-bottom: 150px !important;
+}
+
+/* Utility class for debugging scrolling issues */
+.debug-scroll {
+  border: 2px solid red !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+}
+
+/*
+ Hide mobile navigation when modal is open */
+.modal-open .mobile-navigation {
+  display: none !important;
+}
+
+.modal-open .mobile-nav-footer {
+  display: none !important;
+}
+
+/* Hide bottom navigation when enrollment modal is open */
+.enrollment-modal-open .mobile-navigation,
+.enrollment-modal-open .mobile-nav-footer,
+.enrollment-modal-open [class*="mobile-nav"],
+.enrollment-modal-open [class*="navigation"],
+.enrollment-modal-open .lg\:hidden.fixed.bottom-0,
+.enrollment-modal-open .lg\:hidden.fixed.top-0 {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(100%) !important;
+}
+
+/* More specific targeting for mobile navigation elements */
+.enrollment-modal-open div[class*="lg:hidden"][class*="fixed"][class*="bottom-0"],
+.enrollment-modal-open div[class*="lg:hidden"][class*="fixed"][class*="top-0"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(100%) !important;
+}
+
+/* Target by z-index for mobile navigation */
+.enrollment-modal-open div[style*="z-index: 52"],
+.enrollment-modal-open div[class*="z-\[52\]"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(100%) !important;
+}
+
+/* Ensure modal content takes full screen when navigation is hidden */
+.enrollment-modal-open .mobile-content-with-nav {
+  padding-bottom: 0 !important;
+}
+
+.enrollment-modal-open .native-content {
+  padding-bottom: 0 !important;
+}

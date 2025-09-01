@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Admin Dashboard Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 8px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .card-value.updating {
+            color: #3b82f6;
+            transform: scale(1.05);
+        }
+        
+        .card-change {
+            color: #059669;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .refresh-indicator {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .refresh-indicator.active {
+            opacity: 1;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .activity-feed {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border-left: 4px solid #3b82f6;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+        }
+        
+        .activity-icon.user { background: #3b82f6; }
+        .activity-icon.payment { background: #059669; }
+        .activity-icon.enrollment { background: #7c3aed; }
+        .activity-icon.notification { background: #f59e0b; }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-message {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .feature-description {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .demo-controls {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .demo-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .demo-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Real-Time Admin Dashboard</h1>
+            <p>Experience automatic data updates without any manual refresh buttons!</p>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live Data Updates Active</span>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="refresh-indicator" id="usersRefresh"></div>
+                <div class="card-header">
+                    <div class="card-title">👥 Total Users</div>
+                </div>
+                <div class="card-value" id="totalUsers">1,234</div>
+                <div class="card-change">↗️ +12.5% from last week</div>
+            </div>
+            
+            <div class="card">
+                <div class="refresh-indicator" id="paymentsRefresh"></div>
+                <div class="card-header">
+                    <div class="card-title">💳 Total Payments</div>
+                </div>
+                <div class="card-value" id="totalPayments">₹2,40,000</div>
+                <div class="card-change">↗️ +8.3% from last week</div>
+            </div>
+            
+            <div class="card">
+                <div class="refresh-indicator" id="enrollmentsRefresh"></div>
+                <div class="card-header">
+                    <div class="card-title">📚 Active Enrollments</div>
+                </div>
+                <div class="card-value" id="activeEnrollments">456</div>
+                <div class="card-change">↗️ +15.7% from last week</div>
+            </div>
+            
+            <div class="card">
+                <div class="refresh-indicator" id="sessionsRefresh"></div>
+                <div class="card-header">
+                    <div class="card-title">🏃 Active Sessions</div>
+                </div>
+                <div class="card-value" id="activeSessions">89</div>
+                <div class="card-change">↗️ +6.2% from last week</div>
+            </div>
+        </div>
+        
+        <div class="activity-feed">
+            <h3 style="margin-bottom: 20px; color: #374151; font-size: 1.3rem;">📊 Live Activity Feed</h3>
+            <div id="activityFeed">
+                <!-- Activity items will be added here dynamically -->
+            </div>
+        </div>
+        
+        <div class="demo-controls">
+            <button class="demo-button" onclick="startDemo()">▶️ Start Demo</button>
+            <button class="demo-button" onclick="stopDemo()">⏹️ Stop Demo</button>
+            <button class="demo-button" onclick="simulateUpdate()">⚡ Simulate Update</button>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <div class="feature-title">Auto-Refresh</div>
+                <div class="feature-description">
+                    Data updates automatically every 5-30 seconds based on data type priority
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Real-Time Updates</div>
+                <div class="feature-description">
+                    Instant notifications when new users register or payments are processed
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Live Metrics</div>
+                <div class="feature-description">
+                    Statistics and charts update automatically without page refresh
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Smart Intervals</div>
+                <div class="feature-description">
+                    Different data types refresh at optimal intervals for best performance
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let demoInterval;
+        let activityCounter = 0;
+        
+        const activityTypes = [
+            { type: 'user', icon: '👤', messages: [
+                'New user registered: Rahul Sharma',
+                'User profile updated: Priya Patel',
+                'User status changed: Arjun Kumar → Active'
+            ]},
+            { type: 'payment', icon: '💳', messages: [
+                'Payment received: ₹5,000 from Sarah Wilson',
+                'Payment status updated: Pending → Completed',
+                'Refund processed: ₹2,500 to John Doe'
+            ]},
+            { type: 'enrollment', icon: '📚', messages: [
+                'New enrollment: Football batch by Amit Singh',
+                'Enrollment cancelled: Swimming by Lisa Chen',
+                'Batch transfer: Basketball → Badminton'
+            ]},
+            { type: 'notification', icon: '🔔', messages: [
+                'System notification: Backup completed',
+                'Alert: High server load detected',
+                'Update: New features deployed'
+            ]}
+        ];
+        
+        function addActivity(type, message) {
+            const feed = document.getElementById('activityFeed');
+            const activity = document.createElement('div');
+            activity.className = 'activity-item';
+            
+            const typeData = activityTypes.find(t => t.type === type);
+            const time = new Date().toLocaleTimeString();
+            
+            activity.innerHTML = `
+                <div class="activity-icon ${type}">${typeData.icon}</div>
+                <div class="activity-content">
+                    <div class="activity-message">${message}</div>
+                    <div class="activity-time">${time}</div>
+                </div>
+            `;
+            
+            feed.insertBefore(activity, feed.firstChild);
+            
+            // Keep only last 10 activities
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        function showRefreshIndicator(elementId) {
+            const indicator = document.getElementById(elementId);
+            indicator.classList.add('active');
+            
+            setTimeout(() => {
+                indicator.classList.remove('active');
+            }, 2000);
+        }
+        
+        function updateValue(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            element.classList.add('updating');
+            
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.classList.remove('updating');
+            }, 1000);
+        }
+        
+        function simulateDataUpdate() {
+            // Simulate users update
+            const currentUsers = parseInt(document.getElementById('totalUsers').textContent.replace(/,/g, ''));
+            const newUsers = currentUsers + Math.floor(Math.random() * 10) + 1;
+            showRefreshIndicator('usersRefresh');
+            updateValue('totalUsers', newUsers.toLocaleString());
+            
+            // Simulate payments update
+            const currentPayments = parseInt(document.getElementById('totalPayments').textContent.replace(/[₹,]/g, ''));
+            const newPayments = currentPayments + Math.floor(Math.random() * 50000) + 10000;
+            showRefreshIndicator('paymentsRefresh');
+            updateValue('totalPayments', '₹' + newPayments.toLocaleString());
+            
+            // Simulate enrollments update
+            const currentEnrollments = parseInt(document.getElementById('activeEnrollments').textContent);
+            const newEnrollments = currentEnrollments + Math.floor(Math.random() * 5) + 1;
+            showRefreshIndicator('enrollmentsRefresh');
+            updateValue('activeEnrollments', newEnrollments.toString());
+            
+            // Simulate sessions update
+            const currentSessions = parseInt(document.getElementById('activeSessions').textContent);
+            const newSessions = Math.max(50, currentSessions + Math.floor(Math.random() * 20) - 10);
+            showRefreshIndicator('sessionsRefresh');
+            updateValue('activeSessions', newSessions.toString());
+            
+            // Add random activity
+            const randomType = activityTypes[Math.floor(Math.random() * activityTypes.length)];
+            const randomMessage = randomType.messages[Math.floor(Math.random() * randomType.messages.length)];
+            addActivity(randomType.type, randomMessage);
+        }
+        
+        function startDemo() {
+            if (demoInterval) return;
+            
+            addActivity('notification', 'Real-time demo started - Data will update automatically!');
+            
+            demoInterval = setInterval(() => {
+                simulateDataUpdate();
+            }, 3000); // Update every 3 seconds for demo
+            
+            document.querySelector('button[onclick="startDemo()"]').disabled = true;
+            document.querySelector('button[onclick="stopDemo()"]').disabled = false;
+        }
+        
+        function stopDemo() {
+            if (demoInterval) {
+                clearInterval(demoInterval);
+                demoInterval = null;
+            }
+            
+            addActivity('notification', 'Real-time demo stopped');
+            
+            document.querySelector('button[onclick="startDemo()"]').disabled = false;
+            document.querySelector('button[onclick="stopDemo()"]').disabled = true;
+        }
+        
+        function simulateUpdate() {
+            simulateDataUpdate();
+            addActivity('notification', 'Manual update triggered');
+        }
+        
+        // Initialize with some sample activities
+        window.addEventListener('load', () => {
+            addActivity('notification', 'Admin dashboard loaded successfully');
+            addActivity('user', 'System ready - Real-time updates available');
+            
+            // Auto-start demo after 2 seconds
+            setTimeout(() => {
+                startDemo();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

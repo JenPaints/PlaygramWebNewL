@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Emergency Payment Recovery</title>
+    <script src="https://cdn.jsdelivr.net/npm/convex@1.5.1/dist/browser.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section { margin: 20px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .success { background-color: #d4edda; border-left: 4px solid #28a745; }
+        .error { background-color: #f8d7da; border-left: 4px solid #dc3545; }
+        .warning { background-color: #fff3cd; border-left: 4px solid #ffc107; }
+        .info { background-color: #d1ecf1; border-left: 4px solid #17a2b8; }
+        button { padding: 12px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        button.danger { background: #dc3545; }
+        button.danger:hover { background: #c82333; }
+        button.success { background: #28a745; }
+        button.success:hover { background: #218838; }
+        .data-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .data-table th, .data-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .data-table th { background-color: #f8f9fa; font-weight: bold; }
+        .data-table tr:nth-child(even) { background-color: #f8f9fa; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 12px; }
+        .stats { display: flex; gap: 20px; margin: 20px 0; }
+        .stat-card { flex: 1; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; color: #007bff; }
+        .loading { text-align: center; padding: 20px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 Emergency Payment Recovery Tool</h1>
+        <div class="section warning">
+            <h2>⚠️ CRITICAL ISSUE DETECTED</h2>
+            <p>Your payments are not being tracked properly. This tool will:</p>
+            <ul>
+                <li>Find all enrollments without payment records</li>
+                <li>Create missing payment records in the unified system</li>
+                <li>Sync everything to make payments visible in admin dashboard</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Step 1: Analyze Current State</h2>
+            <button onclick="analyzeCurrentState()">🔍 Analyze Database</button>
+            <div id="analysisResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 2: Emergency Recovery</h2>
+            <button class="danger" onclick="emergencyRecovery()">🚨 RECOVER ALL MISSING PAYMENTS</button>
+            <div id="recoveryResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Verify Fix</h2>
+            <button class="success" onclick="verifyFix()">✅ Verify All Payments Are Now Visible</button>
+            <div id="verifyResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Step 4: Manual Payment Entry</h2>
+            <p>If you know specific payment details, you can manually add them:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 15px 0;">
+                <input type="text" id="manualPhone" placeholder="Phone Number" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="number" id="manualAmount" placeholder="Amount (₹)" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <select id="manualSport" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="">Select Sport</option>
+                    <option value="football">Football</option>
+                    <option value="basketball">Basketball</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="swimming">Swimming</option>
+                </select>
+                <select id="manualPlan" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="">Select Plan</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+            <button onclick="addManualPayment()">➕ Add Manual Payment</button>
+            <div id="manualResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Convex client
+        const convex = new Convex("https://cheerful-wombat-819.convex.cloud");
+
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${content}</div>`;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<div class="loading"><div class="spinner"></div><p>Processing...</p></div>';
+        }
+
+        async function analyzeCurrentState() {
+            try {
+                showLoading('analysisResult');
+
+                // Get all data
+                const enrollments = await convex.query("enrollments:getAllEnrollments", {});
+                const unifiedPayments = await convex.query("paymentTracking:getAllPaymentRecords", {});
+                const paymentLogs = await convex.query("paymentTracking:getPaymentTrackingLogs", { limit: 10 });
+
+                // Analyze the data
+                const enrollmentsWithPayments = enrollments.filter(e => 
+                    unifiedPayments.some(p => p.details?.enrollmentId === e._id)
+                );
+                const enrollmentsWithoutPayments = enrollments.filter(e => 
+                    !unifiedPayments.some(p => p.details?.enrollmentId === e._id)
+                );
+
+                let html = '<div class="stats">';
+                html += `<div class="stat-card"><div class="stat-number">${enrollments.length}</div><div>Total Enrollments</div></div>`;
+                html += `<div class="stat-card"><div class="stat-number">${unifiedPayments.length}</div><div>Payment Records</div></div>`;
+                html += `<div class="stat-card"><div class="stat-number">${enrollmentsWithoutPayments.length}</div><div>Missing Payments</div></div>`;
+                html += `<div class="stat-card"><div class="stat-number">${paymentLogs.length}</div><div>Payment Logs</div></div>`;
+                html += '</div>';
+
+                if (enrollmentsWithoutPayments.length > 0) {
+                    html += '<h3>🚨 MISSING PAYMENTS DETECTED</h3>';
+                    html += '<table class="data-table"><thead><tr>';
+                    html += '<th>Phone</th><th>Sport</th><th>Plan</th><th>Status</th><th>Date</th><th>Payment ID</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    enrollmentsWithoutPayments.slice(0, 20).forEach(enrollment => {
+                        html += '<tr>';
+                        html += `<td>${enrollment.phoneNumber}</td>`;
+                        html += `<td>${enrollment.sport}</td>`;
+                        html += `<td>${enrollment.planId}</td>`;
+                        html += `<td><span style="color: red;">${enrollment.status}</span></td>`;
+                        html += `<td>${new Date(enrollment.enrollmentDate).toLocaleDateString()}</td>`;
+                        html += `<td>${enrollment.paymentId || 'MISSING'}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    if (enrollmentsWithoutPayments.length > 20) {
+                        html += `<p>Showing first 20 of ${enrollmentsWithoutPayments.length} missing payments</p>`;
+                    }
+                }
+
+                if (enrollmentsWithPayments.length > 0) {
+                    html += '<h3>✅ Enrollments WITH Payment Records</h3>';
+                    html += `<p>${enrollmentsWithPayments.length} enrollments have proper payment tracking.</p>`;
+                }
+
+                showResult('analysisResult', html, enrollmentsWithoutPayments.length > 0 ? 'error' : 'success');
+            } catch (error) {
+                showResult('analysisResult', `Error during analysis: ${error.message}`, 'error');
+            }
+        }
+
+        async function emergencyRecovery() {
+            try {
+                showLoading('recoveryResult');
+
+                // First, sync missing payments using the built-in function
+                const syncResult = await convex.mutation("paymentTracking:syncMissingPayments", {});
+                
+                let html = '<h3>🚨 EMERGENCY RECOVERY RESULTS</h3>';
+                
+                if (syncResult.success && syncResult.missingPaymentsCreated > 0) {
+                    html += `<div class="success">`;
+                    html += `<h4>✅ SUCCESS: Recovered ${syncResult.missingPaymentsCreated} missing payments!</h4>`;
+                    html += `<pre>${JSON.stringify(syncResult.details, null, 2)}</pre>`;
+                    html += `</div>`;
+                } else {
+                    html += `<div class="warning">`;
+                    html += `<h4>⚠️ No missing payments found to recover</h4>`;
+                    html += `<p>This might mean:</p>`;
+                    html += `<ul>`;
+                    html += `<li>All payments are already tracked</li>`;
+                    html += `<li>The enrollments don't have payment information</li>`;
+                    html += `<li>There's a different issue with the payment flow</li>`;
+                    html += `</ul>`;
+                    html += `</div>`;
+                }
+
+                // Now let's try to create emergency payment records for any enrollments that still don't have them
+                const enrollments = await convex.query("enrollments:getAllEnrollments", {});
+                const unifiedPayments = await convex.query("paymentTracking:getAllPaymentRecords", {});
+                
+                const stillMissing = enrollments.filter(e => 
+                    !unifiedPayments.some(p => p.details?.enrollmentId === e._id)
+                );
+
+                if (stillMissing.length > 0) {
+                    html += `<h4>🔧 Creating Emergency Payment Records</h4>`;
+                    let emergencyCount = 0;
+                    
+                    for (const enrollment of stillMissing.slice(0, 10)) { // Limit to 10 at a time
+                        try {
+                            const result = await convex.mutation("payments:emergencyCreatePayment", {
+                                phoneNumber: enrollment.phoneNumber,
+                                amount: enrollment.paymentAmount || 4599,
+                                sport: enrollment.sport,
+                                planId: enrollment.planId,
+                                razorpayPaymentId: enrollment.paymentId,
+                                razorpayOrderId: enrollment.orderId
+                            });
+                            
+                            if (result.success) {
+                                emergencyCount++;
+                            }
+                        } catch (error) {
+                            console.error('Emergency payment creation failed:', error);
+                        }
+                    }
+                    
+                    html += `<div class="success">`;
+                    html += `<h4>✅ Created ${emergencyCount} emergency payment records</h4>`;
+                    html += `</div>`;
+                }
+
+                showResult('recoveryResult', html, 'success');
+            } catch (error) {
+                showResult('recoveryResult', `Error during recovery: ${error.message}`, 'error');
+            }
+        }
+
+        async function verifyFix() {
+            try {
+                showLoading('verifyResult');
+
+                // Re-check everything
+                const enrollments = await convex.query("enrollments:getAllEnrollments", {});
+                const unifiedPayments = await convex.query("paymentTracking:getAllPaymentRecords", {});
+                const paymentSummaries = await convex.query("enrollments:getUserPaymentSummary", {});
+
+                const enrollmentsWithPayments = enrollments.filter(e => 
+                    unifiedPayments.some(p => p.details?.enrollmentId === e._id)
+                );
+                const enrollmentsWithoutPayments = enrollments.filter(e => 
+                    !unifiedPayments.some(p => p.details?.enrollmentId === e._id)
+                );
+
+                let html = '<h3>🔍 VERIFICATION RESULTS</h3>';
+                html += '<div class="stats">';
+                html += `<div class="stat-card"><div class="stat-number">${enrollments.length}</div><div>Total Enrollments</div></div>`;
+                html += `<div class="stat-card"><div class="stat-number">${unifiedPayments.length}</div><div>Payment Records</div></div>`;
+                html += `<div class="stat-card"><div class="stat-number">${enrollmentsWithPayments.length}</div><div>Properly Tracked</div></div>`;
+                html += `<div class="stat-card"><div class="stat-number">${paymentSummaries.length}</div><div>Admin Dashboard</div></div>`;
+                html += '</div>';
+
+                if (enrollmentsWithoutPayments.length === 0) {
+                    html += '<div class="success">';
+                    html += '<h4>🎉 SUCCESS! All payments are now properly tracked!</h4>';
+                    html += '<p>✅ All enrollments have corresponding payment records</p>';
+                    html += '<p>✅ Admin dashboard should now show all payments</p>';
+                    html += '<p>✅ Payment tracking is working correctly</p>';
+                    html += '</div>';
+                } else {
+                    html += '<div class="error">';
+                    html += `<h4>❌ Still ${enrollmentsWithoutPayments.length} payments missing</h4>`;
+                    html += '<p>These enrollments still need payment records:</p>';
+                    html += '<ul>';
+                    enrollmentsWithoutPayments.slice(0, 5).forEach(e => {
+                        html += `<li>${e.phoneNumber} - ${e.sport} - ${e.planId}</li>`;
+                    });
+                    html += '</ul>';
+                    html += '</div>';
+                }
+
+                // Show recent payments
+                if (unifiedPayments.length > 0) {
+                    html += '<h4>Recent Payment Records</h4>';
+                    html += '<table class="data-table"><thead><tr>';
+                    html += '<th>Type</th><th>User</th><th>Amount</th><th>Status</th><th>Date</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    unifiedPayments.slice(-10).reverse().forEach(payment => {
+                        html += '<tr>';
+                        html += `<td>${payment.type}</td>`;
+                        html += `<td>${payment.userId}</td>`;
+                        html += `<td>₹${payment.amount}</td>`;
+                        html += `<td><span style="color: ${payment.status === 'completed' ? 'green' : 'orange'}">${payment.status}</span></td>`;
+                        html += `<td>${new Date(payment.createdAt).toLocaleDateString()}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+
+                showResult('verifyResult', html, enrollmentsWithoutPayments.length === 0 ? 'success' : 'warning');
+            } catch (error) {
+                showResult('verifyResult', `Error during verification: ${error.message}`, 'error');
+            }
+        }
+
+        async function addManualPayment() {
+            try {
+                const phone = document.getElementById('manualPhone').value;
+                const amount = parseInt(document.getElementById('manualAmount').value);
+                const sport = document.getElementById('manualSport').value;
+                const plan = document.getElementById('manualPlan').value;
+
+                if (!phone || !amount || !sport || !plan) {
+                    showResult('manualResult', 'Please fill in all fields', 'error');
+                    return;
+                }
+
+                showLoading('manualResult');
+
+                const result = await convex.mutation("payments:addMissingPayment", {
+                    phoneNumber: phone,
+                    sport: sport,
+                    planId: plan,
+                    amount: amount
+                });
+
+                if (result.success) {
+                    showResult('manualResult', 
+                        `✅ Manual payment added successfully!<br>` +
+                        `Payment ID: ${result.paymentId}<br>` +
+                        `Enrollment ID: ${result.enrollmentId}`, 
+                        'success'
+                    );
+                    
+                    // Clear form
+                    document.getElementById('manualPhone').value = '';
+                    document.getElementById('manualAmount').value = '';
+                    document.getElementById('manualSport').value = '';
+                    document.getElementById('manualPlan').value = '';
+                } else {
+                    showResult('manualResult', 'Failed to add manual payment', 'error');
+                }
+            } catch (error) {
+                showResult('manualResult', `Error adding manual payment: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run analysis on load
+        window.onload = function() {
+            analyzeCurrentState();
+        };
+    </script>
+</body>
+</html>
